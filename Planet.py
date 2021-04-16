@@ -36,15 +36,15 @@ def vec_pow(vec, pow):
     return v
 
 class Planet():
-    def __init__(self, semimajor: float, eccentricity: float):
+    def __init__(self, x_vel: float, y_vel: float):
         self.pos = np.array([0, 0], dtype=int)        # x and y position
         self.x = np.array([0, 0], dtype=np.float)    # x and y position
         self.v = np.array([0., 0.], dtype=np.float)    # x and y velocity
         self.a_g = np.array([0., 0.], dtype=np.float)  # x and y acceleration
         self.t = 0.0            # current time
         self.dt = 0.0           # current time step
-        self.a = semimajor      # semimajor axis of the orbit
-        self.e = eccentricity   # eccentricity of the orbit
+        self.a = 0      # semimajor axis of the orbit
+        self.e = 0   # eccentricity of the orbit
         self.istep = 0          # current int timestep1
         self.name: str = ""
         self.color = np.array([255, 255, 255], dtype=int)
@@ -80,7 +80,7 @@ class Planet():
             if planet != self:
                 sqrt_dist: float = vec_sqt(vec_pow((planet.pos - self.pos), 2))
                 force_dir = vec_sqt(vec_pow((planet.pos - self.pos), 2))
-                acceleration = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() / sqrt_dist))
+                # acceleration = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() / sqrt_dist))
                 acceleration = force_dir * Universe.GRAV_CONST * planet.get_mass() / sqrt_dist
                 self.v += acceleration * time_step
 
