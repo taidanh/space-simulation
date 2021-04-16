@@ -1,4 +1,5 @@
 import numpy as np
+import pygame
 
 solar_system = {"M_sun": 1.0, "G": 39.4784176043574320}
 
@@ -72,7 +73,7 @@ def x_full_step(x_ipoh, v_ip1, a_ipoh, dt):
 #--------------------------------------#
 
 
-def EvolveSolarSystem(p, n_planets, t_max):
+def EvolveSolarSystem(p, n_planets, t_max, screen):
     # number of spatial dimensions
     ndim = 2
     # define the first timestep
@@ -82,6 +83,9 @@ def EvolveSolarSystem(p, n_planets, t_max):
     # define timestep
     istep = 0
     # save our initial conditions
+    for planet in p:
+        pygame.draw.circle(screen, planet.get_color(), (planet.x[0], planet.x[1]), planet.get_radius())
+    pygame.display.flip()
     # SaveSolarSystem(p, n_planets, t, dt, istep, ndim) TEST TEST TEST TEST
     # begin a loop over the global timescale
     while(t < t_max):
@@ -130,6 +134,9 @@ def EvolveSolarSystem(p, n_planets, t_max):
         # update the global timestep number
         istep += 1
         # output the current state
+        for planet in p:
+            pygame.draw.circle(screen, planet.get_color(), (planet.x[0], planet.x[1]), planet.get_radius())
+        pygame.display.flip()
         # SaveSolarSystem(p, n_planets, t, dt, istep, ndim) TEST TEST TEST TEST
     # print the final steps and time
     print("Time t = ", t)
