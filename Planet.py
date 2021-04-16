@@ -64,7 +64,7 @@ class Planet():
             if planet != self:
                 sqrt_dist: float = vec_sqrt(planet.x - self.x)
                 force_dir = vec_sqrt((planet.x - self.x) ** 2)
-                acceleration = vec_div(vec_mult(vec_mult(force_dir, Universe.GRAV_CONST), planet.get_mass()), sqrt_dist)
+                acceleration = vec_div(vec_mult(force_dir, (Universe.GRAV_CONST * planet.get_mass())), sqrt_dist)
                 acceleration = force_dir * Universe.GRAV_CONST * planet.get_mass() / sqrt_dist
                 self.v += acceleration * time_step
 
