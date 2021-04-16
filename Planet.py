@@ -4,29 +4,41 @@ import Universe
 import numpy as np
 import pygame
 
+def vec_add(vec1, vec2):
+    if (len(vec1) == len(vec2)):
+        v = np.array([], dtype=float)
+        for i in range(len(vec1)):
+            v = np.append(v, vec1[i] + vec2[i])
+        return v
 
-def vec_sqrt(x):
-    v = np.array(0, dtype=float)
-    for i in x:
-        np.append(v, np.sqrt(i))
+def vec_sqt(x):
+    v = np.array([], dtype=float)
+    for i in range(len(x)):
+        v = np.append(v, np.sqrt(x[i]))
     return v
 
-def vec_mult(vec, scalar):
-    v = np.array(0, dtype=float)
+def vec_mul(vec, scalar):
+    v = np.array([], dtype=float)
     for i in vec:
-        np.append(v, i * scalar)
+        v = np.append(v, i * scalar)
     return v
 
 def vec_div(vec, scalar):
-    v = np.array(0, dtype=float)
-    for i in vec:
-        np.append(v, i / scalar)
+    v = np.array([], dtype=float)
+    for i in range(len(vec)):
+        v = np.append(v, vec[i] / scalar)
     return v
 
+def vec_pow(vec, pow):
+    v = np.array([], dtype=float)
+    for i in range(len(vec)):
+        v = np.append(v, vec[i] ** pow)
+    return v
 
 class Planet():
     def __init__(self, semimajor: float, eccentricity: float):
-        self.x = np.array([0., 0.], dtype=np.float)    # x and y position
+        self.pos = np.array([0, 0], dtype=int)        # x and y position
+        self.x = np.array([0, 0], dtype=np.float)    # x and y position
         self.v = np.array([0., 0.], dtype=np.float)    # x and y velocity
         self.a_g = np.array([0., 0.], dtype=np.float)  # x and y acceleration
         self.t = 0.0            # current time
@@ -35,7 +47,7 @@ class Planet():
         self.e = eccentricity   # eccentricity of the orbit
         self.istep = 0          # current int timestep1
         self.name: str = ""
-        self.color = np.array([255, 255, 255])
+        self.color = np.array([255, 255, 255], dtype=int)
         self.radius: int = 0
         self.surface_gravity:float = 0.0
 
@@ -43,10 +55,14 @@ class Planet():
         return self.radius
 
     def set_pos(self, x, y):
-        self.x[0], self.x[1] = x, y
+        self.pos[0] = x
+        self.pos[1] = y
+        return
 
     def get_pos(self):
-        return self.x[0], self.x[1]
+        x = self.pos[0]
+        y = self.pos[1]
+        return (x, y)
 
     def set_color(self, r: int, g: int, b: int):
         self.color[0] = r
@@ -62,11 +78,11 @@ class Planet():
     def update_velocity(self, all_planets, time_step: float):
         for planet in all_planets:
             if planet != self:
-                sqrt_dist: float = vec_sqrt(planet.x - self.x)
-                force_dir = vec_sqrt((planet.x - self.x) ** 2)
-                acceleration = vec_div(vec_mult(force_dir, (Universe.GRAV_CONST * planet.get_mass())), sqrt_dist)
+                sqrt_dist: float = vec_sqt(vec_pow((planet.pos - self.pos), 2))
+                force_dir = vec_sqt(vec_pow((planet.pos - self.pos), 2))
+                acceleration = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() / sqrt_dist))
                 acceleration = force_dir * Universe.GRAV_CONST * planet.get_mass() / sqrt_dist
                 self.v += acceleration * time_step
 
     def update_position(self, time_step: float):
-        self.get_pos + self.v * time_step
+        self.pos = vec_add(self.pos, vec_mul(self.v, time_step))

@@ -9,15 +9,13 @@ from pygame.locals import *
 
 p = Planet(0., 0.)
 p.radius = 40
-p.x[0] = 150
-p.x[1] = 140
+p.set_pos(150, 140)
 p.set_color(0, 0, 255)
 
 p2 = Planet(0., 0.)
-p.radius = 30
-p.x[0] = 30
-p.x[1] = 500
-p.set_color(0, 255, 0)
+p2.radius = 30
+p2.set_pos(30, 500)
+p2.set_color(0, 255, 0)
 
 all_planets = [p, p2]
 
@@ -45,11 +43,12 @@ while running:
     screen.fill((255, 255, 255))
 
     # draw solid blue circle in center
-    pygame.draw.circle(screen, p.get_color(), p.get_pos(), p.get_radius())
 
     p.update_velocity(all_planets, Universe.TIME_STEP)
     for planet in all_planets:
         planet.update_position(Universe.TIME_STEP)
+        pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
+
 
 #    x, y = p.get_pos()
 #    p.set_pos(x + 1, y)
