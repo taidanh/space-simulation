@@ -69,20 +69,13 @@ def vec_normed(vec):
 #--------------#
 
 class Planet():
-    def __init__(self, x_vel: float, y_vel: float):
-        self.pos = np.array([0, 0], dtype=int)          # x and y position
-        self.x = np.array([0, 0], dtype=np.float)       # x and y position
-        self.v = np.array([0., 0.], dtype=np.float)     # x and y velocity
-        self.a_g = np.array([0., 0.], dtype=np.float)   # x and y acceleration
-        self.t = 0.0            # current time
-        self.dt = 0.0           # current time step
-        self.a = 0              # semimajor axis of the orbit
-        self.e = 0              # eccentricity of the orbit
-        self.istep = 0          # current int timestep1
-        self.name: str = ""
-        self.color = np.array([255, 255, 255], dtype=int)
-        self.radius: int = 0
-        self.surface_gravity:float = 0.0
+    def __init__(self, name: str, pos: [float], vel: [float], radius: int, color: [int], grav: float):
+        self.pos: [float] = np.array(pos, dtype=float)          # x and y position
+        self.v: [float] = np.array(vel, dtype=np.float)     # x and y velocity
+        self.name: str = name
+        self.color: [int] = np.array(color, dtype=int)
+        self.radius: int = radius
+        self.surface_gravity:float = grav
 
     def get_radius(self):
         return self.radius
@@ -116,10 +109,7 @@ class Planet():
             if planet != self:
                 dist_sqr: float = vec_dist(planet.pos, self.pos)
                 force_dir: [float] = vec_normed(vec_sub(planet.get_pos(), self.get_pos()))
-                # force_dir = vec_sqt(vec_pow((planet.pos - self.pos), 2))
                 force = force_dir * Universe.GRAV_CONST * self.get_mass() * planet.get_mass() / dist_sqr
-                # self.a_g = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() * self.get_mass() / dist_sqr))
-                # self.a_g = force_dir * Universe.GRAV_CONST * planet.get_mass() / dist_sqr
                 acceleration = force / self.get_mass()
                 self.v += vec_mul(acceleration, time_step)
 

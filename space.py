@@ -1,64 +1,19 @@
 #! /usr/bin/env python3
 from Planet import *
-import OrbitalFunctions
 import Universe
 
 import numpy as np
 import pygame
 from pygame.locals import *
 
-# temp1 = Planet(1.0, 0.0)
-# temp1.radius = 40
-# temp1.set_pos(100, 250)
-# temp1.v[0] = 100
-# temp1.v[1] = 0
-# temp1.surface_gravity = 200
-# temp1.set_color(0, 0, 255)
-# temp1.name = "top"
+#           name           pos        vel       radius   color       surface_gravity
+p1 = Planet("walnut",   (640, 360), (2, 0),       50, (0, 0, 255), 7000)
+p2 = Planet("bruh",     (640, 450), (-400, 0),    15, (0, 255, 0), 10)
+p3 = Planet("tucan",    (800, 200), (-200, -200), 30, (255, 0, 0), 200)
+p4 = Planet("moon",     (800, 155), (-290, -160), 5,  (115, 115, 115), 50)
 
-# temp2 = Planet(1.0, 0.0)
-# temp2.radius = 40
-# temp2.set_pos(100, 500)
-# temp2.v[0] = 100
-# temp2.v[1] = 0
-# temp2.surface_gravity = 200
-# temp2.set_color(0, 255, 0)
-# temp2.name = "bottom"
-
-p = Planet(1., 0.)
-p.radius = 50
-p.set_pos(640, 360)
-p.v[0] = 0
-p.v[1] = 0
-p.x[0] = 500
-p.x[1] = 140
-p.surface_gravity = 7000
-p.set_color(0, 0, 255)
-p.name = "walnut"
-
-p2 = Planet(100., 0.)
-p2.radius = 30
-p2.set_pos(600, 500)
-p2.v[0] = -100
-p2.v[1] = -100
-p2.x[0] = 600
-p2.x[1] = 500
-p2.surface_gravity = 10
-p2.set_color(0, 255, 0)
-p2.name = "bruh"
-
-p3 = Planet(100., 0.)
-p3.radius = 50
-p3.set_pos(800, 200)
-p3.v[0] = -200
-p3.v[1] = -200
-p3.x[0] = 800
-p3.x[1] = 200
-p3.surface_gravity = 10
-p3.set_color(255, 0, 0)
-p3.name = "tucan"
-
-all_planets = [p, p2, p3]
+all_planets: [Planet] = [p1, p2, p3, p4]
+radius: int = 20
 
 #--------------#
 # pygame stuff #
@@ -77,6 +32,7 @@ background = pygame.Surface(window)
 running = True
 pause = True
 
+# press SPACE to start simulation
 while pause:
     for event in pygame.event.get():
         if event.type == KEYDOWN:
@@ -96,22 +52,29 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
 
-    # while background
-    screen.fill((255, 255, 255))
+    # black background
+    screen.fill((0, 0, 0))
 
+    # draw connecting lines between planets
     for i in range(len(all_planets)):
         for k in all_planets[i:]:
-            pygame.draw.line(screen, (0, 0, 0), all_planets[i].get_pos(), k.get_pos())
+            pygame.draw.line(screen, (255, 255, 255), all_planets[i].get_pos(), k.get_pos())
 
+    # do physics on all planets
     for planet in all_planets:
         planet.update_velocity(all_planets, Universe.TIME_STEP)
-        print("{}'s vel =\t[{:.3f}, {:.3f}],\tnormed = {}".format(
-            planet.name, planet.v[0], planet.v[1], planet.get_vel()))
+        # print("{}'s vel =\t[{:.3f}, {:.3f}],\tnormed = {}".format(
+        #    planet.name, planet.v[0], planet.v[1], planet.get_vel()))
         planet.update_position(Universe.TIME_STEP)
         pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
         pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_add(planet.get_pos(), vec_mul(planet.get_vel(), 30)))
-        text = font_renderer.render(planet.name, True, (0, 0, 0))
+        text = font_renderer.render(planet.name, True, (255, 255, 255))
         screen.blit(text, planet.get_pos())
+    
+    # draw circle around cursor
+    x_mouse, y_mouse = pygame.mouse.get_pos()
+    pygame.draw.circle(screen, (255, 255, 255), (x_mouse, y_mouse), radius, width=1)
+
     # flip the display
     pygame.display.flip()
 
