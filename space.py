@@ -29,7 +29,18 @@ p2.surface_gravity = 10
 p2.set_color(0, 255, 0)
 p2.name = "bruh"
 
-all_planets = [p, p2]
+p3 = Planet(100., 0.)
+p3.radius = 50
+p3.set_pos(800, 200)
+p3.v[0] = -100
+p3.v[1] = -100
+p3.x[0] = 800
+p3.x[1] = 200
+p3.surface_gravity = 10
+p3.set_color(255, 0, 0)
+p3.name = "tucan"
+
+all_planets = [p, p2, p3]
 
 #--------------#
 # pygame stuff #
@@ -39,13 +50,24 @@ pygame.init()
 pygame.font.init()
 default_font = pygame.font.get_default_font()
 font_renderer = pygame.font.Font(default_font, 12)
+clock = pygame.time.Clock()
 
 window = (1280, 720)
 screen = pygame.display.set_mode(window)
 background = pygame.Surface(window)
 
 running = True
+pause = True
+
+while pause:
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.key == K_SPACE:
+                pause = False
+
 while running:
+
+    dt = clock.tick(60)
 
     # check if user closed game
     for event in pygame.event.get():
@@ -59,7 +81,9 @@ while running:
     # while background
     screen.fill((255, 255, 255))
 
-    # draw solid blue circle in center
+    for i in range(len(all_planets)):
+        for k in all_planets[i:]:
+            pygame.draw.line(screen, (0, 0, 0), all_planets[i].get_pos(), k.get_pos())
 
     for planet in all_planets:
         planet.update_velocity(all_planets, Universe.TIME_STEP)
@@ -67,6 +91,7 @@ while running:
             planet.name, planet.v[0], planet.v[1]))
         planet.update_position(Universe.TIME_STEP)
         pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
+        pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_add(planet.get_pos(), planet.get_vel()))
         text = font_renderer.render(planet.name, True, (0, 0, 0))
         screen.blit(text, planet.get_pos())
     # flip the display
