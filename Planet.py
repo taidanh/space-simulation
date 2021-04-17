@@ -52,6 +52,14 @@ def vec_magnitude(vec):
         sum += i ** 2
     return np.sqrt(sum)
 
+def vec_dist(vec1, vec2):
+    if (len(vec1) == len(vec2)):
+        sum: float = 0
+        for i in range(len(vec1)):
+            sum += (vec1[i] - vec2[i]) ** 2
+        return sum
+    return -1
+
 def vec_normed(vec):
     return vec_div(vec, vec_magnitude(vec))
 
@@ -101,12 +109,12 @@ class Planet():
         return self.surface_gravity * self.radius * self.radius / Universe.GRAV_CONST
 
     def get_vel(self):
-        return [int(i) for i in vec_normed(self.v)]
+        return vec_normed(self.v)
 
     def update_velocity(self, all_planets, time_step: float):
         for planet in all_planets:
             if planet != self:
-                dist_sqr: float = vec_pow((planet.pos - self.pos), 2)
+                dist_sqr: float = vec_dist(planet.pos, self.pos)
                 force_dir: [float] = vec_normed(vec_sub(planet.get_pos(), self.get_pos()))
                 # force_dir = vec_sqt(vec_pow((planet.pos - self.pos), 2))
                 force = force_dir * Universe.GRAV_CONST * self.get_mass() * planet.get_mass() / dist_sqr

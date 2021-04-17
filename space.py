@@ -7,14 +7,32 @@ import numpy as np
 import pygame
 from pygame.locals import *
 
+# temp1 = Planet(1.0, 0.0)
+# temp1.radius = 40
+# temp1.set_pos(100, 250)
+# temp1.v[0] = 100
+# temp1.v[1] = 0
+# temp1.surface_gravity = 200
+# temp1.set_color(0, 0, 255)
+# temp1.name = "top"
+
+# temp2 = Planet(1.0, 0.0)
+# temp2.radius = 40
+# temp2.set_pos(100, 500)
+# temp2.v[0] = 100
+# temp2.v[1] = 0
+# temp2.surface_gravity = 200
+# temp2.set_color(0, 255, 0)
+# temp2.name = "bottom"
+
 p = Planet(1., 0.)
-p.radius = 40
-p.set_pos(500, 140)
-p.v[0] = -100
+p.radius = 50
+p.set_pos(640, 360)
+p.v[0] = 0
 p.v[1] = 0
 p.x[0] = 500
 p.x[1] = 140
-p.surface_gravity = 7
+p.surface_gravity = 7000
 p.set_color(0, 0, 255)
 p.name = "walnut"
 
@@ -87,11 +105,11 @@ while running:
 
     for planet in all_planets:
         planet.update_velocity(all_planets, Universe.TIME_STEP)
-        print("{}'s vel =\t[{:.3f}, {:.3f}]".format(
-            planet.name, planet.v[0], planet.v[1]))
+        print("{}'s vel =\t[{:.3f}, {:.3f}],\tnormed = {}".format(
+            planet.name, planet.v[0], planet.v[1], planet.get_vel()))
         planet.update_position(Universe.TIME_STEP)
         pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
-        pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_mul(vec_add(planet.get_pos(), planet.get_vel()), 2))
+        pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_add(planet.get_pos(), vec_mul(planet.get_vel(), 30)))
         text = font_renderer.render(planet.name, True, (0, 0, 0))
         screen.blit(text, planet.get_pos())
     # flip the display
