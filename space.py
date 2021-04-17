@@ -14,7 +14,7 @@ p.v[0] = -100
 p.v[1] = 0
 p.x[0] = 500
 p.x[1] = 140
-p.surface_gravity = 1
+p.surface_gravity = 7
 p.set_color(0, 0, 255)
 p.name = "walnut"
 
@@ -63,8 +63,8 @@ while running:
 
     for planet in all_planets:
         planet.update_velocity(all_planets, Universe.TIME_STEP)
-        print("{}'s vel =\t[{:.3f}, {:.3f}]"
-            .format(planet.name, planet.v[0], planet.v[1]))
+        print("{}'s vel =\t[{:.3f}, {:.3f}]".format(
+            planet.name, planet.v[0], planet.v[1]))
         planet.update_position(Universe.TIME_STEP)
         pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
         text = font_renderer.render(planet.name, True, (0, 0, 0))

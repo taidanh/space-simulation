@@ -40,7 +40,7 @@ def vec_pow(vec, pow):
     return v
 
 def vec_magnitude(vec):
-    v = np.array([-1 if 1 < 0 else 1 for i in vec])
+    v = np.array([-1 if i < 0 else 1 for i in vec])
     vec = vec_sqt(vec_pow(vec, 2))
     return vec * v
 
@@ -91,12 +91,14 @@ class Planet():
     def update_velocity(self, all_planets, time_step: float):
         for planet in all_planets:
             if planet != self:
-                sqrt_dist: float = vec_pow((planet.pos - self.pos), 2)
+                dist_sqr: float = vec_pow((planet.pos - self.pos), 2)
                 force_dir: [float] = vec_magnitude(planet.pos - self.pos)
                 # force_dir = vec_sqt(vec_pow((planet.pos - self.pos), 2))
-                self.a_g = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() / sqrt_dist))
-                acceleration = force_dir * Universe.GRAV_CONST * planet.get_mass() / sqrt_dist
-                self.v += acceleration * time_step
+                force = force_dir * Universe.GRAV_CONST * self.get_mass() * planet.get_mass() / dist_sqr
+                # self.a_g = vec_mul(force_dir, (Universe.GRAV_CONST * planet.get_mass() * self.get_mass() / dist_sqr))
+                # self.a_g = force_dir * Universe.GRAV_CONST * planet.get_mass() / dist_sqr
+                acceleration = force / self.get_mass()
+                self.v += vec_mul(acceleration, time_step)
 
     def update_position(self, time_step: float):
         self.pos = vec_add(self.pos, vec_mul(self.v, time_step))
