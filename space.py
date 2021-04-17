@@ -50,8 +50,8 @@ p2.name = "bruh"
 p3 = Planet(100., 0.)
 p3.radius = 50
 p3.set_pos(800, 200)
-p3.v[0] = -100
-p3.v[1] = -100
+p3.v[0] = -200
+p3.v[1] = -200
 p3.x[0] = 800
 p3.x[1] = 200
 p3.surface_gravity = 10
