@@ -91,7 +91,7 @@ while running:
             planet.name, planet.v[0], planet.v[1]))
         planet.update_position(Universe.TIME_STEP)
         pygame.draw.circle(screen, planet.get_color(), planet.get_pos(), planet.get_radius())
-        pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_add(planet.get_pos(), planet.get_vel()))
+        pygame.draw.line(screen, (115, 115, 115), planet.get_pos(), vec_mul(vec_add(planet.get_pos(), planet.get_vel()), 2))
         text = font_renderer.render(planet.name, True, (0, 0, 0))
         screen.blit(text, planet.get_pos())
     # flip the display
