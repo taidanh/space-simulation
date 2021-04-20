@@ -19,6 +19,14 @@ radius: int = 20
 def rand_color():
     return (randint(0, 255), randint(0, 255), randint(0, 255))
 
+def point_to_circle(radius: float, cx: float, cy: float, px: float, py: float):
+    vx: float = px - cx
+    vy: float = py - cy
+    magV: float = vec_magnitude((vx, vy))
+    ax: float = cx + vx / magV * radius
+    ay: float = cy + vy / magV * radius
+    return (ax, ay)
+
 #--------------#
 # pygame stuff #
 #--------------#
@@ -32,6 +40,8 @@ clock = pygame.time.Clock()
 window = (1280, 720)
 screen = pygame.display.set_mode(window)
 background = pygame.Surface(window)
+angle = (85, window[1] - 110)
+last_event = 0
 
 running = True
 pause = True
@@ -40,6 +50,8 @@ pause = True
 while running:
 
     dt = clock.tick(60)
+    
+    last_event += dt
 
     # black background
     screen.fill((0, 0, 0))
@@ -59,9 +71,20 @@ while running:
         text = font_renderer.render(planet.name, True, (255, 255, 255))
         screen.blit(text, planet.get_pos())
     
+    box = pygame.draw.rect(screen, (115, 115, 115), (10, window[1] - 260, 160, window[1] - 10))
+    pygame.draw.circle(screen, (75, 75, 75), (85, window[1] - 180), 70)
     # draw circle around cursor
-    x_mouse, y_mouse = pygame.mouse.get_pos()
-    pygame.draw.circle(screen, (255, 255, 255), (x_mouse, y_mouse), radius, width=1)
+    if (box.collidepoint(pygame.mouse.get_pos()) == False):
+        pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), radius, width=1)
+        if (pygame.mouse.get_pressed()[0] and last_event > 250):
+            all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), (randint(-300, 300), randint(-300, 300)), radius,  rand_color(), 15))
+            last_event = 0
+    else:
+        if (pygame.mouse.get_pressed()[0]):
+            x, y = pygame.mouse.get_pos()
+            angle = point_to_circle(70, 85, window[1] - 180, x, y)
+
+    pygame.draw.line(screen, (255, 255, 255), (85, window[1] - 180), angle)
 
     # flip the display
     pygame.display.flip()
@@ -83,8 +106,8 @@ while running:
             if event.button == 5:
                 if (radius - 2) > 0:
                     radius -= 2
-            if event.button == 1:
-                all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), (randint(-100, 100), randint(-100, 100)), radius,  rand_color(), 15))
+#            if event.button == 1:
+#                all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), (randint(-300, 300), randint(-300, 300)), radius,  rand_color(), 15))
 
 
 pygame.quit()
