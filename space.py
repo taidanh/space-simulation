@@ -39,22 +39,27 @@ clock = pygame.time.Clock()
 
 window = (1280, 720)
 screen = pygame.display.set_mode(window)
-background = pygame.Surface(window)
+
+angle_screen = pygame.Surface((150, 250))
+angle_screen.fill((115,115,115))
 angle = (85, window[1] - 110)
+multiplier: float = 0
 last_event = 0
+
+def update_angle_screen():
+    pygame.draw.circle(angle_screen, (11,11,11), (75, 75), 70)
 
 running = True
 pause = True
 
-
 while running:
 
-    dt = clock.tick(60)
+    screen.fill((0, 0, 0))
+
+    dt = clock.tick()
     
     last_event += dt
 
-    # black background
-    screen.fill((0, 0, 0))
 
     # draw connecting lines between planets
     for i in range(len(all_planets)):
@@ -86,6 +91,9 @@ while running:
 
     pygame.draw.line(screen, (255, 255, 255), (85, window[1] - 180), angle)
 
+    update_angle_screen()
+    screen.blit(angle_screen, (10, 10))
+
     # flip the display
     pygame.display.flip()
 
@@ -106,8 +114,6 @@ while running:
             if event.button == 5:
                 if (radius - 2) > 0:
                     radius -= 2
-#            if event.button == 1:
-#                all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), (randint(-300, 300), randint(-300, 300)), radius,  rand_color(), 15))
 
 
 pygame.quit()
