@@ -19,13 +19,18 @@ radius: int = 20
 def rand_color():
     return (randint(0, 255), randint(0, 255), randint(0, 255))
 
-def point_to_circle(radius: float, cx: float, cy: float, px: float, py: float):
+def point_to_circle(radius: float, c: (float), p: (float)):
+    cx, cy = c
+    px, py = p
     vx: float = px - cx
     vy: float = py - cy
     magV: float = vec_magnitude((vx, vy))
     ax: float = cx + vx / magV * radius
     ay: float = cy + vy / magV * radius
     return (ax, ay)
+
+def point_to_angle(radius: float, center: (float), point: (float)):
+    pass
 
 #--------------#
 # pygame stuff #
@@ -40,14 +45,10 @@ clock = pygame.time.Clock()
 window = (1280, 720)
 screen = pygame.display.set_mode(window)
 
-angle_screen = pygame.Surface((150, 250))
-angle_screen.fill((115,115,115))
-angle = (85, window[1] - 110)
+center = (90, window[1] - 180)
+angle = (center[0], center[1] - 70)
 multiplier: float = 0
 last_event = 0
-
-def update_angle_screen():
-    pygame.draw.circle(angle_screen, (11,11,11), (75, 75), 70)
 
 running = True
 pause = True
@@ -77,22 +78,20 @@ while running:
         screen.blit(text, planet.get_pos())
     
     box = pygame.draw.rect(screen, (115, 115, 115), (10, window[1] - 260, 160, window[1] - 10))
-    pygame.draw.circle(screen, (75, 75, 75), (85, window[1] - 180), 70)
+    pygame.draw.circle(screen, (75, 75, 75), center, 70)
     # draw circle around cursor
     if (box.collidepoint(pygame.mouse.get_pos()) == False):
         pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), radius, width=1)
         if (pygame.mouse.get_pressed()[0] and last_event > 250):
-            all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), (randint(-300, 300), randint(-300, 300)), radius,  rand_color(), 15))
+            all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), vec_mul(vec_normed(vec_sub(angle, center)), randint(100, 400)), radius,  rand_color(), 15))
             last_event = 0
     else:
         if (pygame.mouse.get_pressed()[0]):
             x, y = pygame.mouse.get_pos()
-            angle = point_to_circle(70, 85, window[1] - 180, x, y)
+            angle = point_to_circle(70, center, (x, y))
 
-    pygame.draw.line(screen, (255, 255, 255), (85, window[1] - 180), angle)
+    pygame.draw.line(screen, (255, 255, 255), center, angle)
 
-    update_angle_screen()
-    screen.blit(angle_screen, (10, 10))
 
     # flip the display
     pygame.display.flip()
