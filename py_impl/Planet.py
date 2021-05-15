@@ -46,13 +46,13 @@ def vec_pow(vec, pow):
         v = np.append(v, vec[i] ** pow)
     return v
 
-def vec_magnitude(vec):
+def vec_mag(vec):
     sum: float = 0
     for i in vec:
         sum += i ** 2
     return np.sqrt(sum)
 
-def vec_dist(vec1, vec2):
+def vec_dst(vec1, vec2):
     if (len(vec1) == len(vec2)):
         sum: float = 0
         for i in range(len(vec1)):
@@ -60,8 +60,8 @@ def vec_dist(vec1, vec2):
         return sum
     return -1
 
-def vec_normed(vec):
-    return vec_div(vec, vec_magnitude(vec))
+def vec_nrm(vec):
+    return vec_div(vec, vec_mag(vec))
 
 
 #--------------#
@@ -102,15 +102,15 @@ class Planet():
         return self.surface_gravity * self.radius * self.radius / Universe.GRAV_CONST
 
     def get_vel(self):
-        return vec_normed(self.v)
+        return vec_nrm(self.v)
 
     def update_velocity(self, all_planets, time_step: float):
         for planet in all_planets:
             if planet != self:
-                dist_sqr: float = vec_dist(planet.pos, self.pos)
-                force_dir: [float] = vec_normed(vec_sub(planet.get_pos(), self.get_pos()))
-                force = force_dir * Universe.GRAV_CONST * self.get_mass() * planet.get_mass() / dist_sqr
-                acceleration = force / self.get_mass()
+                dst_sqr: float = vec_dst(planet.pos, self.pos)
+                force_dir: [float] = vec_nrm(vec_sub(planet.get_pos(), self.get_pos()))
+                force: [float] = force_dir * Universe.GRAV_CONST * self.get_mass() * planet.get_mass() / dst_sqr
+                acceleration: [float] = force / self.get_mass()
                 self.v += vec_mul(acceleration, time_step)
 
     def update_position(self, time_step: float):

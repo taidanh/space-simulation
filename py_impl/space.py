@@ -24,7 +24,7 @@ def point_to_circle(radius: float, c: (float), p: (float)):
     px, py = p
     vx: float = px - cx
     vy: float = py - cy
-    magV: float = vec_magnitude((vx, vy))
+    magV: float = vec_mag((vx, vy))
     ax: float = cx + vx / magV * radius
     ay: float = cy + vy / magV * radius
     return (ax, ay)
@@ -83,7 +83,7 @@ while running:
     if (box.collidepoint(pygame.mouse.get_pos()) == False):
         pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), radius, width=1)
         if (pygame.mouse.get_pressed()[0] and last_event > 250):
-            all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), vec_mul(vec_normed(vec_sub(angle, center)), randint(100, 400)), radius,  rand_color(), 15))
+            all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), vec_mul(vec_nrm(vec_sub(angle, center)), randint(100, 400)), radius,  rand_color(), 15))
             last_event = 0
     else:
         if (pygame.mouse.get_pressed()[0]):
