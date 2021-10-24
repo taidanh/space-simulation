@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 from Planet import *
 import Universe
+import ui
 
 from random import randint
 import numpy as np
@@ -12,25 +13,14 @@ p1 = Planet("walnut",   (640, 360), (2, 0),       50, (0, 0, 255), 7000)
 p2 = Planet("bruh",     (640, 450), (-400, 0),    15, (0, 255, 0), 10)
 p3 = Planet("raq",    (800, 200), (-200, -200), 30, (255, 0, 0), 200)
 p4 = Planet("moon",     (800, 155), (-290, -160), 5,  (115, 115, 115), 50)
+p5 = Planet("luis",     (700, 255), (-290, -160), 5,  (115, 115, 115), 50)
 
-all_planets: [Planet] = [p1, p2, p3, p4]
+all_planets: [Planet] = [p1, p2, p3, p4, p5]
 radius: int = 20
 
 def rand_color():
     return (randint(0, 255), randint(0, 255), randint(0, 255))
 
-def point_to_circle(radius: float, c: (float), p: (float)):
-    cx, cy = c
-    px, py = p
-    vx: float = px - cx
-    vy: float = py - cy
-    magV: float = vec_mag((vx, vy))
-    ax: float = cx + vx / magV * radius
-    ay: float = cy + vy / magV * radius
-    return (ax, ay)
-
-def point_to_angle(radius: float, center: (float), point: (float)):
-    pass
 
 #--------------#
 # pygame stuff #
@@ -45,8 +35,11 @@ clock = pygame.time.Clock()
 window = (1280, 720)
 screen = pygame.display.set_mode(window)
 
-center = (90, window[1] - 180)
+center = (90, window[1] - 170)
+box_pos = (10, window[1] - 250)
 angle = (center[0], center[1] - 70)
+box = ui.draw_planet_picker(box_pos, center, (115,115,115), (75,75,75), screen)
+
 multiplier: float = 0
 last_event = 0
 
@@ -63,9 +56,7 @@ while running:
 
 
     # draw connecting lines between planets
-    for i in range(len(all_planets)):
-        for k in all_planets[i:]:
-            pygame.draw.line(screen, (255, 255, 255), all_planets[i].get_pos(), k.get_pos())
+    # ui.draw_planet_connecting_lines(all_planets, (255,255,255), screen)
 
     # do physics on all planets
     for planet in all_planets:
@@ -77,20 +68,16 @@ while running:
         text = font_renderer.render(planet.name, True, (255, 255, 255))
         screen.blit(text, planet.get_pos())
     
-    box = pygame.draw.rect(screen, (115, 115, 115), (10, window[1] - 260, 160, window[1] - 10))
-    pygame.draw.circle(screen, (75, 75, 75), center, 70)
+#    box = pygame.draw.rect(screen, (115, 115, 115), (10, window[1] - 260, 160, window[1] - 10))
+#    pygame.draw.circle(screen, (75, 75, 75), box_pos, 70)
+    angle = ui.planet_picker(box_pos, angle, (115,115,115), (75,75,75), screen)
+
     # draw circle around cursor
     if (box.collidepoint(pygame.mouse.get_pos()) == False):
         pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), radius, width=1)
         if (pygame.mouse.get_pressed()[0] and last_event > 250):
             all_planets.append(Planet("unnamed", pygame.mouse.get_pos(), vec_mul(vec_nrm(vec_sub(angle, center)), randint(100, 400)), radius,  rand_color(), 15))
             last_event = 0
-    else:
-        if (pygame.mouse.get_pressed()[0]):
-            x, y = pygame.mouse.get_pos()
-            angle = point_to_circle(70, center, (x, y))
-
-    pygame.draw.line(screen, (255, 255, 255), center, angle)
 
 
     # flip the display
